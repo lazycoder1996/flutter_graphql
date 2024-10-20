@@ -81,7 +81,6 @@ class _SubscriptionHookState<TParsed> extends HookState<
   StreamSubscription<List<ConnectivityResult>>? _networkSubscription;
 
   void _initSubscription() {
-    hook.initState?.call();
     final client = hook.client;
     stream = client.subscribe(hook.options);
     final onSubscriptionResult = hook.onSubscriptionResult;
@@ -97,6 +96,7 @@ class _SubscriptionHookState<TParsed> extends HookState<
   void initHook() {
     super.initHook();
     _initSubscription();
+    hook.initState?.call();
     _networkSubscription =
         Connectivity().onConnectivityChanged.listen(_onNetworkChange);
   }
@@ -131,6 +131,7 @@ class _SubscriptionHookState<TParsed> extends HookState<
           if (nsLookupResult.isNotEmpty &&
               nsLookupResult[0].rawAddress.isNotEmpty) {
             _initSubscription();
+    hook.initState?.call();
           }
           // on exception -> no real connection, set current state to none
         } on SocketException catch (_) {
@@ -138,6 +139,7 @@ class _SubscriptionHookState<TParsed> extends HookState<
         }
       } else {
         _initSubscription();
+    hook.initState?.call();
       }
     } else {
       _currentConnectivityResult = List.from(results, growable: false);
